@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RPG El Señor de los Anillos</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --background-dark: #2c3e50;
+            --text-light: #ecf0f1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--background-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #game-wrapper {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            width: 100%;
+        }
+
+        #game-container {
+            position: relative;
+            width: 800px;
+            height: 800px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23334455"/><path d="M0 50h100M50 0v100" stroke="%23445566" stroke-width="0.5"/></svg>');
+            border: 3px solid #456;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        #player {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            z-index: 100;
+            transition: all 0.1s ease;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+        }
+
+        .enemy {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .enemy.boss {
+            width: 60px;
+            height: 60px;
+            font-size: 50px;
+            filter: drop-shadow(0 0 10px red);
+        }
+
+        .item {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            animation: float 2s infinite ease-in-out;
+            filter: drop-shadow(0 0 3px gold);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #game-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+        }
+
+        .info-panel {
+            background: rgba(52, 73, 94, 0.8);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .info-panel h2 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+            font-size: 1.2em;
+        }
+
+        #health-bar, #experience-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        #health-fill {
+            height: 100%;
+            background: var(--danger-color);
+            width: 100%;
+            transition: width 0.3s ease;
+        }
+
+        #experience-fill {
+            height: 100%;
+            background: var(--secondary-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        #battle-log {
+            height: 200px;
+            overflow-y: auto;
+            font-family: monospace;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        #inventory-list, #quest-list {
+            list-style: none;
+        }
+
+        #inventory-list li, #quest-list li {
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .skill-button {
+            background: rgba(52, 152, 219, 0.2);
+            border: 1px solid rgba(52, 152, 219, 0.5);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .skill-button:hover:not(:disabled) {
+            background: rgba(52, 152, 219, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .skill-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #game-over {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(192, 57, 43, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            z-index: 1000;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #respawn-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background: var(--primary-color);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #respawn-button:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .damage-text {
+            position: absolute;
+            color: white;
+            font-weight: bold;
+            animation: float-damage 1s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes float-damage {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        .effect-heal {
+            position: absolute;
+            font-size: 40px;
+            animation: heal-effect 1s forwards;
+            pointer-events: none;
+        }
+
+        @keyframes heal-effect {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(2) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        #controls-help {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-wrapper">
+        <div id="game-container">
+            <div id="player">🧝</div>
+            <div id="enemies-container"></div>
+            <div id="items-container"></div>
+        </div>
+        <div id="game-info">
+            <div class="info-panel">
+                <h2>Estadísticas</h2>
+                <div>Nivel: <span id="level">1</span></div>
+                <div>Vida: <span id="health">1000</span>/<span id="max-health">1000</span></div>
+                <div id="health-bar"><div id="health-fill"></div></div>
+                <div>Experiencia</div>
+                <div id="experience-bar"><div id="experience-fill"></div></div>
+                <div>Enemigos derrotados: <span id="defeated">0</span></div>
+            </div>
+
+            <div class="info-panel">
+                <h2>Habilidades</h2>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button class="skill-button" onclick="GameController.useSkill('doubleStrike')" id="skill-double-strike">
+                        ⚔️ Golpe Doble [1]
+                    </button>
+                    <button class="skill-button" onclick="GameController.useSkill('heal')" id="skill-heal">
+                        💚 Curación [2]
+                    </button>
+                    <button class="skill-button" onclick="GameController.useSkill('shield')" id="skill-shield">
+                        🛡️ Escudo [3]
+                    </button>
+                </div>
+            </div>
+
+            <div class="info-panel">
+                <h2>Inventario</h2>
+                <ul id="inventory-list"></ul>
+            </div>
+
+            <div class="info-panel">
+                <h2>Misiones</h2>
+                <ul id="quest-list"></ul>
+            </div>
+
+            <div class="info-panel">
+                <h2>Registro de Batalla</h2>
+                <div id="battle-log"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-over" class="hidden">
+        <h2>¡Has sido derrotado!</h2>
+        <p>Enemigos derrotados: <span id="final-score">0</span></p>
+        <button id="respawn-button">Reaparecer</button>
+    </div>
+
+    <div id="controls-help">
+        Controles: ↑↓←→ para moverse | 1: Golpe Doble | 2: Curación | 3: Escudo
+    </div>
+
+<script>
+// Game State Management
+const GameState = {
+    player: {
+        health: 1000,
+        maxHealth: 1000,
+        level: 1,
+        experience: 0,
+        damage: 25,
+        position: { x: 390, y: 390 },
+        inventory: [],
+        skills: {
+            doubleStrike: { name: 'Golpe Doble', damage: 1.5, cooldown: 5000, lastUsed: 0 },
+            heal: { name: 'Curación', amount: 200, cooldown: 10000, lastUsed: 0 },
+            shield: { name: 'Escudo', reduction: 0.5, duration: 3000, cooldown: 15000, lastUsed: 0, active: false }
+        }
+    },
+    enemies: [],
+    items: [],
+    quests: [
+        { id: 1, description: 'Derrota a 5 enemigos', completed: false, target: 5, reward: '🗡️ Espada élfica' },
+        { id: 2, description: 'Encuentra el Anillo Único', completed: false, reward: '🌟 Poder ancestral' },
+        { id: 3, description: 'Derrota a Sauron', completed: false, reward: '👑 Corona de Gondor' }
+    ],
+    statistics: {
+        enemiesDefeated: 0,
+        itemsCollected: 0,
+        damageDealt: 0,
+        damageTaken: 0
+    },
+    gameStatus: {
+        inBattle: false,
+        isGameOver: false,
+        bossSpawned: false,
+        isPaused: false
+    }
+};
+
+// Game Controller
+const GameController = {
+    init() {
+        this.bindElements();
+        this.setupEventListeners();
+        this.spawnInitialEntities();
+        this.startGameLoop();
+        this.updateUI();
+    },
+
+    bindElements() {
+        this.elements = {
+            player: document.getElementById('player'),
+            enemiesContainer: document.getElementById('enemies-container'),
+            itemsContainer: document.getElementById('items-container'),
+            healthDisplay: document.getElementById('health'),
+            maxHealthDisplay: document.getElementById('max-health'),
+            healthFill: document.getElementById('health-fill'),
+            levelDisplay: document.getElementById('level'),
+            experienceFill: document.getElementById('experience-fill'),
+            defeatedDisplay: document.getElementById('defeated'),
+            battleLog: document.getElementById('battle-log'),
+            gameOverScreen: document.getElementById('game-over'),
+            finalScore: document.getElementById('final-score'),
+            inventoryList: document.getElementById('inventory-list'),
+            questList: document.getElementById('quest-list'),
+            skillButtons: {
+                doubleStrike: document.getElementById('skill-double-strike'),
+                heal: document.getElementById('skill-heal'),
+                shield: document.getElementById('skill-shield')
+            }
+        };
+    },
+
+    setupEventListeners() {
+        document.addEventListener('keydown', this.handleKeyPress.bind(this));
+        document.getElementById('respawn-button').addEventListener('click', this.respawnPlayer.bind(this));
+    },
+
+    handleKeyPress(event) {
+        if (GameState.gameStatus.isGameOver) return;
+
+        switch(event.key) {
+            case 'ArrowUp':
+            case 'ArrowDown':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                this.movePlayer(event.key);
+                break;
+            case '1':
+                this.useSkill('doubleStrike');
+                break;
+            case '2':
+                this.useSkill('heal');
+                break;
+            case '3':
+                this.useSkill('shield');
+                break;
+        }
+    },
+
+    movePlayer(direction) {
+        if (GameState.gameStatus.inBattle) return;
+
+        const pos = GameState.player.position;
+        const step = 10;
+
+        switch(direction) {
+            case 'ArrowUp':
+                pos.y = Math.max(pos.y - step, 0);
+                break;
+            case 'ArrowDown':
+                pos.y = Math.min(pos.y + step, 760);
+                break;
+            case 'ArrowLeft':
+                pos.x = Math.max(pos.x - step, 0);
+                break;
+            case 'ArrowRight':
+                pos.x = Math.min(
