@@ -48,6 +48,11 @@ body {
     color: black;
 }
 
+.enemy.boss {
+    color: red;
+    font-size: 32px; /* Hacer al jefe más grande */
+}
+
 .item {
     position: absolute;
     font-size: 24px;

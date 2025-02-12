@@ -282,18 +282,14 @@ function addToLog(message) {
 }
 
 // Inicializar el juego
-for (let i = 0; i < 3; i++) {
-    createEnemy();
+function initializeGame() {
+    for (let i = 0; i < 3; i++) {
+        createEnemy();
+    }
+    for (let i = 0; i < 2; i++) {
+        createItem();
+    }
+    updateQuests();
 }
-for (let i = 0; i < 2; i++) {
-    createItem();
-}
-updateQuests();
-// Inicializar el juego
-for (let i = 0; i < 3; i++) {
-    createEnemy();
-}
-for (let i = 0; i < 2; i++) {
-    createItem();
-}
-updateQuests(); // Mostrar misiones al iniciar
+
+initializeGame();
