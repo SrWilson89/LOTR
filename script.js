@@ -1,190 +1,27 @@
 const player = document.getElementById('player');
-const enemy = document.getElementById('enemy');
+const enemiesContainer = document.getElementById('enemies-container');
+const itemsContainer = document.getElementById('items-container');
 const healthDisplay = document.getElementById('health');
+const levelDisplay = document.getElementById('level');
 const defeatedDisplay = document.getElementById('defeated');
 const battleLog = document.getElementById('battle-log');
+const gameOverScreen = document.getElementById('game-over');
+const respawnButton = document.getElementById('respawn-button');
 
 let playerHealth = 100;
+let playerLevel = 1;
 let enemiesDefeated = 0;
-let enemyHealth = 50;
+let playerDamage = 15;
+let inBattle = false;
+let isGameOver = false;
+let enemies = [];
+let items = [];
 
+// Función para mover al jugador
 document.addEventListener('keydown', movePlayer);
 
 function movePlayer(event) {
-    let x = parseInt(player.style.left) || 190;
-    let y = parseInt(player.style.top) || 190;
-
-    switch(event.key) {
-        case 'ArrowUp':
-            y -= 10;
-            break;
-        case 'ArrowDown':
-            y += 10;
-            break;
-        case 'ArrowLeft':
-            x -= 10;
-            break;
-        case 'ArrowRight':
-            x += 10;
-            break;
-    }
-
-    player.style.left = x + 'px';
-    player.style.top = y + 'px';
-
-    checkForEnemy();
-}
-
-function checkForEnemy() {
-    let playerRect = player.getBoundingClientRect();
-    let enemyRect = enemy.getBoundingClientRect();
-
-    if (playerRect.left < enemyRect.right &&
-        playerRect.right > enemyRect.left &&
-        playerRect.top < enemyRect.bottom &&
-        playerRect.bottom > enemyRect.top) {
-        startBattle();
-    }
-}
-
-function startBattle() {
-    enemy.style.display = 'block';
-    battleLog.innerHTML += '¡Un enemigo aparece!<br>';
-
-    let battleInterval = setInterval(() => {
-        let playerDamage = Math.floor(Math.random() * 15) + 1;
-        let enemyDamage = Math.floor(Math.random() * 10) + 1;
-
-        enemyHealth -= playerDamage;
-        playerHealth -= enemyDamage;
-
-        battleLog.innerHTML += `Le hiciste ${playerDamage} de daño al enemigo.<br>`;
-        battleLog.innerHTML += `El enemigo te hizo ${enemyDamage} de daño.<br>`;
-
-        if (enemyHealth <= 0) {
-            clearInterval(battleInterval);
-            enemy.style.display = 'none';
-            enemiesDefeated++;
-            defeatedDisplay.textContent = enemiesDefeated;
-            battleLog.innerHTML += '¡Has derrotado al enemigo!<br>';
-            enemyHealth = 50;
-            respawnEnemy();
-        }
-
-        if (playerHealth <= 0) {
-            clearInterval(battleInterval);
-            battleLog.innerHTML += '¡Has sido derrotado!<br>';
-            playerHealth = 0;
-        }
-
-        healthDisplay.textContent = playerHealth;
-    }, 1000);
-}
-
-function respawnEnemy() {
-    let x = Math.floor(Math.random() * 380);
-    let y = Math.floor(Math.random() * 380);
-    enemy.style.left = x + 'px';
-    enemy.style.top = y + 'px';
-}
-
-// Inicializar enemigo
-respawnEnemy();
-
-function movePlayer(event) {
-    let x = parseInt(player.style.left) || 190;
-    let y = parseInt(player.style.top) || 190;
-
-    switch(event.key) {
-        case 'ArrowUp':
-            y = Math.max(y - 10, 0); // No permitir moverse más allá del borde superior
-            break;
-        case 'ArrowDown':
-            y = Math.min(y + 10, 380); // No permitir moverse más allá del borde inferior
-            break;
-        case 'ArrowLeft':
-            x = Math.max(x - 10, 0); // No permitir moverse más allá del borde izquierdo
-            break;
-        case 'ArrowRight':
-            x = Math.min(x + 10, 380); // No permitir moverse más allá del borde derecho
-            break;
-    }
-
-    player.style.left = x + 'px';
-    player.style.top = y + 'px';
-
-    checkForEnemy();
-}
-
-function respawnEnemy() {
-    let playerRect = player.getBoundingClientRect();
-    let x, y;
-
-    do {
-        x = Math.floor(Math.random() * 380);
-        y = Math.floor(Math.random() * 380);
-    } while (
-        Math.abs(x - playerRect.left) < 50 && Math.abs(y - playerRect.top) < 50
-    );
-
-    enemy.style.left = x + 'px';
-    enemy.style.top = y + 'px';
-}
-
-function startBattle() {
-    enemy.style.display = 'block';
-    battleLog.innerHTML += '¡Un enemigo aparece!<br>';
-
-    let battleInterval = setInterval(() => {
-        if (playerHealth <= 0 || enemyHealth <= 0) {
-            clearInterval(battleInterval);
-            if (playerHealth <= 0) {
-                battleLog.innerHTML += '¡Has sido derrotado!<br>';
-                playerHealth = 0;
-                healthDisplay.textContent = playerHealth;
-            }
-            return;
-        }
-
-        let playerDamage = Math.floor(Math.random() * 15) + 1;
-        let enemyDamage = Math.floor(Math.random() * 10) + 1;
-
-        enemyHealth -= playerDamage;
-        playerHealth -= enemyDamage;
-
-        battleLog.innerHTML += `Le hiciste ${playerDamage} de daño al enemigo.<br>`;
-        battleLog.innerHTML += `El enemigo te hizo ${enemyDamage} de daño.<br>`;
-
-        if (enemyHealth <= 0) {
-            clearInterval(battleInterval);
-            enemy.style.display = 'none';
-            enemiesDefeated++;
-            defeatedDisplay.textContent = enemiesDefeated;
-            battleLog.innerHTML += '¡Has derrotado al enemigo!<br>';
-            enemyHealth = 50;
-            respawnEnemy();
-        }
-
-        healthDisplay.textContent = playerHealth;
-    }, 1000);
-}
-
-function addToLog(message) {
-    battleLog.innerHTML += message + '<br>';
-    // Limitar el registro a las últimas 10 líneas
-    let lines = battleLog.innerHTML.split('<br>');
-    if (lines.length > 10) {
-        lines = lines.slice(-10);
-        battleLog.innerHTML = lines.join('<br>');
-    }
-    // Desplazar el scroll al final
-    battleLog.scrollTop = battleLog.scrollHeight;
-}
-
-let inBattle = false;
-
-function movePlayer(event) {
-    if (inBattle) return; // No mover al jugador durante la batalla
+    if (inBattle || isGameOver) return; // No mover al jugador durante la batalla o si el juego terminó
 
     let x = parseInt(player.style.left) || 190;
     let y = parseInt(player.style.top) || 190;
@@ -207,46 +44,167 @@ function movePlayer(event) {
     player.style.left = x + 'px';
     player.style.top = y + 'px';
 
-    checkForEnemy();
+    checkForEnemies();
+    checkForItems();
 }
 
-function startBattle() {
-    inBattle = true; // Activar el estado de batalla
-    enemy.style.display = 'block';
-    addToLog('¡Un enemigo aparece!');
+// Función para crear un enemigo
+function createEnemy() {
+    const enemy = document.createElement('div');
+    enemy.className = 'enemy';
+    enemy.textContent = '👹';
+    enemy.style.left = Math.floor(Math.random() * 380) + 'px';
+    enemy.style.top = Math.floor(Math.random() * 380) + 'px';
+    enemy.health = Math.floor(Math.random() * 50) + 30;
+    enemy.damage = Math.floor(Math.random() * 10) + 5;
+    enemiesContainer.appendChild(enemy);
+    enemies.push(enemy);
+}
 
-    let battleInterval = setInterval(() => {
-        if (playerHealth <= 0 || enemyHealth <= 0) {
+// Función para verificar colisiones con enemigos
+function checkForEnemies() {
+    const playerRect = player.getBoundingClientRect();
+    enemies.forEach((enemy, index) => {
+        const enemyRect = enemy.getBoundingClientRect();
+        if (playerRect.left < enemyRect.right &&
+            playerRect.right > enemyRect.left &&
+            playerRect.top < enemyRect.bottom &&
+            playerRect.bottom > enemyRect.top) {
+            startBattle(enemy, index);
+        }
+    });
+}
+
+// Función para iniciar una batalla
+function startBattle(enemy, index) {
+    inBattle = true;
+    addToLog(`¡Un enemigo (${enemy.textContent}) con ${enemy.health} de salud aparece!`);
+
+    const battleInterval = setInterval(() => {
+        if (playerHealth <= 0 || enemy.health <= 0) {
             clearInterval(battleInterval);
-            inBattle = false; // Desactivar el estado de batalla
+            inBattle = false;
             if (playerHealth <= 0) {
-                addToLog('¡Has sido derrotado!');
-                playerHealth = 0;
-                healthDisplay.textContent = playerHealth;
+                gameOver();
+            } else {
+                addToLog('¡Has derrotado al enemigo!');
+                enemies.splice(index, 1);
+                enemy.remove();
+                enemiesDefeated++;
+                defeatedDisplay.textContent = enemiesDefeated;
+                checkLevelUp();
             }
             return;
         }
 
-        let playerDamage = Math.floor(Math.random() * 15) + 1;
-        let enemyDamage = Math.floor(Math.random() * 10) + 1;
+        const playerAttack = Math.floor(Math.random() * playerDamage) + 1;
+        const enemyAttack = Math.floor(Math.random() * enemy.damage) + 1;
 
-        enemyHealth -= playerDamage;
-        playerHealth -= enemyDamage;
+        enemy.health -= playerAttack;
+        playerHealth -= enemyAttack;
 
-        addToLog(`Le hiciste ${playerDamage} de daño al enemigo.`);
-        addToLog(`El enemigo te hizo ${enemyDamage} de daño.`);
-
-        if (enemyHealth <= 0) {
-            clearInterval(battleInterval);
-            inBattle = false; // Desactivar el estado de batalla
-            enemy.style.display = 'none';
-            enemiesDefeated++;
-            defeatedDisplay.textContent = enemiesDefeated;
-            addToLog('¡Has derrotado al enemigo!');
-            enemyHealth = 50;
-            respawnEnemy();
-        }
+        addToLog(`Le hiciste ${playerAttack} de daño al enemigo.`);
+        addToLog(`El enemigo te hizo ${enemyAttack} de daño.`);
 
         healthDisplay.textContent = playerHealth;
     }, 1000);
+}
+
+// Función para mostrar "Game Over"
+function gameOver() {
+    isGameOver = true;
+    gameOverScreen.classList.remove('hidden');
+    addToLog('¡Has sido derrotado!');
+    playerHealth = 0;
+    healthDisplay.textContent = playerHealth;
+}
+
+// Función para reaparecer
+respawnButton.addEventListener('click', () => {
+    isGameOver = false;
+    gameOverScreen.classList.add('hidden');
+    playerHealth = 100;
+    healthDisplay.textContent = playerHealth;
+    player.style.left = '190px';
+    player.style.top = '190px';
+    addToLog('¡Has reaparecido!');
+});
+
+// Función para verificar si el jugador sube de nivel
+function checkLevelUp() {
+    if (enemiesDefeated >= playerLevel * 3) {
+        playerLevel++;
+        levelDisplay.textContent = playerLevel;
+        addToLog(`¡Has subido al nivel ${playerLevel}!`);
+        increaseDifficulty();
+    }
+}
+
+// Función para aumentar la dificultad
+function increaseDifficulty() {
+    playerHealth += 20;
+    healthDisplay.textContent = playerHealth;
+
+    for (let i = 0; i < playerLevel; i++) {
+        createEnemy();
+    }
+}
+
+// Función para crear un item
+function createItem() {
+    const item = document.createElement('div');
+    item.className = 'item';
+    item.textContent = Math.random() > 0.5 ? '💍' : '🧪';
+    item.style.left = Math.floor(Math.random() * 380) + 'px';
+    item.style.top = Math.floor(Math.random() * 380) + 'px';
+    item.type = item.textContent === '💍' ? 'power' : 'health';
+    itemsContainer.appendChild(item);
+    items.push(item);
+}
+
+// Función para verificar colisiones con items
+function checkForItems() {
+    const playerRect = player.getBoundingClientRect();
+    items.forEach((item, index) => {
+        const itemRect = item.getBoundingClientRect();
+        if (playerRect.left < itemRect.right &&
+            playerRect.right > itemRect.left &&
+            playerRect.top < itemRect.bottom &&
+            playerRect.bottom > itemRect.top) {
+            pickUpItem(item, index);
+        }
+    });
+}
+
+// Función para recoger un item
+function pickUpItem(item, index) {
+    if (item.type === 'health') {
+        playerHealth += 20;
+        addToLog('¡Has recogido una poción mágica! +20 de salud.');
+    } else {
+        playerDamage += 5;
+        addToLog('¡Has encontrado el Anillo Único! +5 de daño.');
+    }
+    healthDisplay.textContent = playerHealth;
+    items.splice(index, 1);
+    item.remove();
+}
+
+// Función para agregar mensajes al registro de batalla
+function addToLog(message) {
+    battleLog.innerHTML += message + '<br>';
+    let lines = battleLog.innerHTML.split('<br>');
+    if (lines.length > 10) {
+        lines = lines.slice(-10);
+        battleLog.innerHTML = lines.join('<br>');
+    }
+    battleLog.scrollTop = battleLog.scrollHeight;
+}
+
+// Inicializar el juego
+for (let i = 0; i < 3; i++) {
+    createEnemy();
+}
+for (let i = 0; i < 2; i++) {
+    createItem();
 }

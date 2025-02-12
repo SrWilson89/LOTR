@@ -26,19 +26,19 @@ body {
 
 #player {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: blue;
+    font-size: 24px;
     top: 190px;
     left: 190px;
 }
 
-#enemy {
+.enemy {
     position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: red;
-    display: none;
+    font-size: 24px;
+}
+
+.item {
+    position: absolute;
+    font-size: 24px;
 }
 
 #stats {
@@ -53,9 +53,38 @@ body {
     left: 10px;
     width: 380px;
     height: 60px;
-    background-color: #111;
+    background-color: #11111115;
     color: white;
     padding: 5px;
     overflow-y: auto;
     font-size: 12px;
+}
+
+#game-over {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+}
+
+#game-over.hidden {
+    display: none;
+}
+
+#respawn-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#respawn-button:hover {
+    background-color: #45a049;
 }

@@ -9,13 +9,19 @@
 <body>
     <div id="game-container">
         <div id="map"></div>
-        <div id="player"></div>
-        <div id="enemy"></div>
+        <div id="player">🧝</div>
+        <div id="enemies-container"></div>
+        <div id="items-container"></div>
         <div id="stats">
             <p>Vida: <span id="health">100</span></p>
+            <p>Nivel: <span id="level">1</span></p>
             <p>Enemigos Derrotados: <span id="defeated">0</span></p>
         </div>
         <div id="battle-log"></div>
+        <div id="game-over" class="hidden">
+            <p>¡Game Over!</p>
+            <button id="respawn-button">Reaparecer</button>
+        </div>
     </div>
     <script src="script.js"></script>
 </body>
