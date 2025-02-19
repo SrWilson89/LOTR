@@ -13,7 +13,7 @@ const questList = document.getElementById('quest-list');
 let playerHealth = 1000;
 let playerLevel = 1;
 let enemiesDefeated = 0;
-let playerDamage = 40;
+let playerDamage = 25;
 let inBattle = false;
 let isGameOver = false;
 let bossSpawned = false;
@@ -34,7 +34,7 @@ function movePlayer(event) {
     let x = parseInt(player.style.left) || 390;
     let y = parseInt(player.style.top) || 390;
 
-    switch(event.key) {
+    switch (event.key) {
         case 'ArrowUp':
             y = Math.max(y - 10, 0);
             break;
@@ -249,18 +249,63 @@ function updateInventory() {
 
 // Función para verificar misiones
 function checkQuests() {
+    let quest1Completed = false; // Misión 1: Derrotar a 5 enemigos
+    let quest2Completed = false; // Misión 2: Encontrar el Anillo Único
+
     quests.forEach(quest => {
         if (!quest.completed) {
             if (quest.target && enemiesDefeated >= quest.target) {
                 quest.completed = true;
                 addToLog(`¡Misión completada: ${quest.description}!`);
+                quest1Completed = true;
             } else if (inventory.includes('💍')) {
                 quest.completed = true;
                 addToLog(`¡Misión completada: ${quest.description}!`);
+                quest2Completed = true;
+            }
+        } else {
+            // Si la misión ya estaba completada, verificamos cuál es
+            if (quest.description === 'Derrota a 5 enemigos') {
+                quest1Completed = true;
+            } else if (quest.description === 'Encuentra el Anillo Único') {
+                quest2Completed = true;
             }
         }
     });
+
     updateQuests();
+
+    // Verificar si ambas misiones están completadas
+    if (quest1Completed && quest2Completed) {
+        showVictoryMessage();
+    }
+}
+
+// Función para mostrar el mensaje de victoria
+function showVictoryMessage() {
+    const victoryMessage = document.createElement('div');
+    victoryMessage.id = 'victory-message';
+    victoryMessage.innerHTML = `
+        <p>¡Has ganado!</p>
+        <button id="restart-button">Reiniciar Juego</button>
+    `;
+    victoryMessage.style.position = 'absolute';
+    victoryMessage.style.top = '50%';
+    victoryMessage.style.left = '50%';
+    victoryMessage.style.transform = 'translate(-50%, -50%)';
+    victoryMessage.style.textAlign = 'center';
+    victoryMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    victoryMessage.style.padding = '20px';
+    victoryMessage.style.borderRadius = '10px';
+    victoryMessage.style.color = 'white';
+    victoryMessage.style.zIndex = '1000';
+    document.body.appendChild(victoryMessage);
+
+    // Agregar un botón para reiniciar el juego
+    const restartButton = document.getElementById('restart-button');
+    restartButton.addEventListener('click', () => {
+        location.reload(); // Recargar la página para reiniciar el juego
+    });
 }
 
 // Función para actualizar las misiones
@@ -292,99 +337,7 @@ function initializeGame() {
     updateQuests();
 }
 
-initializeGame();
-// Agregar una función para mostrar el mensaje de victoria
-function showVictoryMessage() {
-    const victoryMessage = document.createElement('div');
-    victoryMessage.id = 'victory-message';
-    victoryMessage.innerHTML = `
-        <p>¡Has ganado!</p>
-        <button id="restart-button">Reiniciar Juego</button>
-    `;
-    victoryMessage.style.position = 'absolute';
-    victoryMessage.style.top = '50%';
-    victoryMessage.style.left = '50%';
-    victoryMessage.style.transform = 'translate(-50%, -50%)';
-    victoryMessage.style.textAlign = 'center';
-    victoryMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
-    victoryMessage.style.padding = '20px';
-    victoryMessage.style.borderRadius = '10px';
-    victoryMessage.style.color = 'white';
-    victoryMessage.style.zIndex = '1000';
-    document.body.appendChild(victoryMessage);
-
-    // Agregar un botón para reiniciar el juego
-    const restartButton = document.getElementById('restart-button');
-    restartButton.addEventListener('click', () => {
-        location.reload(); // Recargar la página para reiniciar el juego
-    });
-}
-
-// Modificar la función checkQuests para verificar si el jugador ha ganado
-function checkQuests() {
-    let quest1Completed = false; // Misión 1: Derrotar a 5 enemigos
-    let quest2Completed = false; // Misión 2: Encontrar el Anillo Único
-
-    quests.forEach(quest => {
-        if (!quest.completed) {
-            if (quest.target && enemiesDefeated >= quest.target) {
-                quest.completed = true;
-                addToLog(`¡Misión completada: ${quest.description}!`);
-                quest1Completed = true; // Marcar la primera misión como completada
-            } else if (inventory.includes('💍')) {
-                quest.completed = true;
-                addToLog(`¡Misión completada: ${quest.description}!`);
-                quest2Completed = true; // Marcar la segunda misión como completada
-            }
-        } else {
-            // Si la misión ya estaba completada, verificamos cuál es
-            if (quest.description === 'Derrota a 5 enemigos') {
-                quest1Completed = true;
-            } else if (quest.description === 'Encuentra el Anillo Único') {
-                quest2Completed = true;
-            }
-        }
-    });
-
-    updateQuests();
-
-    // Verificar si ambas misiones están completadas
-    if (quest1Completed && quest2Completed) {
-        showVictoryMessage();
-    }
-}
-// Función para crear decoraciones (árboles y rocas)
-function createDecorations() {
-    const decorations = ['🌳', '🌲', '🪨']; // Emojis para árboles y rocas
-    for (let i = 0; i < 10; i++) { // Crear 10 decoraciones
-        const decoration = document.createElement('div');
-        decoration.className = 'decoration';
-        decoration.textContent = decorations[Math.floor(Math.random() * decorations.length)];
-        if (decoration.textContent === '🪨') {
-            decoration.classList.add('rock');
-        } else {
-            decoration.classList.add('tree');
-        }
-        decoration.style.left = Math.floor(Math.random() * 780) + 'px';
-        decoration.style.top = Math.floor(Math.random() * 780) + 'px';
-        document.getElementById('map').appendChild(decoration);
-    }
-}
-
-// Llamar a la función para crear decoraciones al inicializar el juego
-function initializeGame() {
-    createDecorations(); // Agregar decoraciones
-    for (let i = 0; i < 3; i++) {
-        createEnemy();
-    }
-    for (let i = 0; i < 2; i++) {
-        createItem();
-    }
-    updateQuests();
-}
-// Agrega esto al final del archivo script.js
-
-// Obtener los botones de control móvil
+// Controles móviles
 const upButton = document.getElementById('up');
 const leftButton = document.getElementById('left');
 const downButton = document.getElementById('down');
@@ -407,42 +360,24 @@ function moveRight() {
     movePlayer({ key: 'ArrowRight' });
 }
 
-// Asignar eventos a los botones
+// Asignar eventos táctiles y de clic a los botones
 upButton.addEventListener('click', moveUp);
+upButton.addEventListener('touchstart', moveUp);
+
 leftButton.addEventListener('click', moveLeft);
+leftButton.addEventListener('touchstart', moveLeft);
+
 downButton.addEventListener('click', moveDown);
+downButton.addEventListener('touchstart', moveDown);
+
 rightButton.addEventListener('click', moveRight);
+rightButton.addEventListener('touchstart', moveRight);
 
-// Permitir arrastrar los botones (opcional)
-let isDragging = false;
-
-function startDrag(event) {
-    isDragging = true;
-}
-
-function endDrag() {
-    isDragging = false;
-}
-
-function handleDrag(event) {
-    if (isDragging) {
-        const button = event.target;
-        const rect = button.getBoundingClientRect();
-        const offsetX = event.clientX - rect.left;
-        const offsetY = event.clientY - rect.top;
-
-        button.style.position = 'absolute';
-        button.style.left = `${event.clientX - offsetX}px`;
-        button.style.top = `${event.clientY - offsetY}px`;
-    }
-}
-
-// Asignar eventos de arrastre (opcional)
+// Evitar el comportamiento predeterminado de los eventos táctiles
 document.querySelectorAll('#mobile-controls button').forEach(button => {
-    button.addEventListener('mousedown', startDrag);
-    button.addEventListener('touchstart', startDrag);
-    button.addEventListener('mouseup', endDrag);
-    button.addEventListener('touchend', endDrag);
-    button.addEventListener('mousemove', handleDrag);
-    button.addEventListener('touchmove', handleDrag);
+    button.addEventListener('touchstart', (e) => {
+        e.preventDefault(); // Evita el zoom o scroll no deseado
+    });
 });
+
+initializeGame();

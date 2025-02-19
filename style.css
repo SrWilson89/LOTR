@@ -26,21 +26,21 @@ body {
     height: 100%;
     background-color: #444;
     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23555" /><path d="M20 0l20 20-20 20L0 20z" fill="%23666" /></svg>');
-    background-size: 40px 40px; 
+    background-size: 40px 40px;
 }
 
 #player {
     position: absolute;
     font-size: 24px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 2; /* Para que el jugador esté por encima de las decoraciones */
+    z-index: 2;
 }
 
 .enemy {
     position: absolute;
     font-size: 24px;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 2; /* Para que los enemigos estén por encima de las decoraciones */
+    z-index: 2;
 }
 
 .enemy.troll {
@@ -60,8 +60,8 @@ body {
 .item {
     position: absolute;
     font-size: 24px;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); /* Brillo dorado */
-    z-index: 2; /* Para que los objetos estén por encima de las decoraciones */
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
+    z-index: 2;
 }
 
 #stats {
@@ -134,31 +134,6 @@ body {
     margin: 0;
 }
 
-#abilities {
-    position: absolute;
-    bottom: 80px;
-    left: 10px;
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
-
-#abilities button {
-    padding: 5px 10px;
-    font-size: 14px;
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#abilities button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    transform: scale(1.05);
-}
-
 #quests {
     position: absolute;
     top: 150px;
@@ -172,6 +147,53 @@ body {
     list-style-type: none;
     padding: 0;
     margin: 0;
+}
+
+#mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: grid;
+    grid-template-areas:
+        ". up ."
+        "left down right";
+    gap: 10px;
+    z-index: 1000;
+}
+
+#mobile-controls button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    touch-action: none;
+}
+
+#mobile-controls button:active {
+    background-color: rgba(255, 255, 255, 0.5);
+    transform: scale(1.2);
+}
+
+#up {
+    grid-area: up;
+}
+
+#left {
+    grid-area: left;
+}
+
+#down {
+    grid-area: down;
+}
+
+#right {
+    grid-area: right;
 }
 
 @media (max-width: 600px) {
@@ -193,106 +215,5 @@ body {
     #battle-log {
         height: 40px;
         font-size: 10px;
-    }
-
-    #abilities {
-        bottom: 60px;
-    }
-
-    #abilities button {
-        padding: 3px 6px;
-        font-size: 12px;
-    }
-}
-#victory-message {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    color: white;
-    z-index: 1000;
-}
-
-#restart-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#restart-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-.decoration {
-    position: absolute;
-    font-size: 24px;
-    z-index: 1; /* Para que estén detrás del jugador y los enemigos */
-}
-
-.tree {
-    color: green;
-}
-
-.rock {
-    color: gray;
-}
-#mobile-controls {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    display: grid;
-    grid-template-areas:
-        ". up ."
-        "left down right";
-    gap: 10px;
-    z-index: 1000; /* Para que estén por encima de otros elementos */
-}
-
-#mobile-controls button {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#mobile-controls button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.1);
-}
-
-#up {
-    grid-area: up;
-}
-
-#left {
-    grid-area: left;
-}
-
-#down {
-    grid-area: down;
-}
-
-#right {
-    grid-area: right;
-}
-
-/* Ocultar controles en pantallas grandes */
-@media (min-width: 768px) {
-    #mobile-controls {
-        display: none;
     }
 }
