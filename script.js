@@ -382,3 +382,67 @@ function initializeGame() {
     }
     updateQuests();
 }
+// Agrega esto al final del archivo script.js
+
+// Obtener los botones de control móvil
+const upButton = document.getElementById('up');
+const leftButton = document.getElementById('left');
+const downButton = document.getElementById('down');
+const rightButton = document.getElementById('right');
+
+// Funciones para mover al jugador
+function moveUp() {
+    movePlayer({ key: 'ArrowUp' });
+}
+
+function moveLeft() {
+    movePlayer({ key: 'ArrowLeft' });
+}
+
+function moveDown() {
+    movePlayer({ key: 'ArrowDown' });
+}
+
+function moveRight() {
+    movePlayer({ key: 'ArrowRight' });
+}
+
+// Asignar eventos a los botones
+upButton.addEventListener('click', moveUp);
+leftButton.addEventListener('click', moveLeft);
+downButton.addEventListener('click', moveDown);
+rightButton.addEventListener('click', moveRight);
+
+// Permitir arrastrar los botones (opcional)
+let isDragging = false;
+
+function startDrag(event) {
+    isDragging = true;
+}
+
+function endDrag() {
+    isDragging = false;
+}
+
+function handleDrag(event) {
+    if (isDragging) {
+        const button = event.target;
+        const rect = button.getBoundingClientRect();
+        const offsetX = event.clientX - rect.left;
+        const offsetY = event.clientY - rect.top;
+
+        button.style.position = 'absolute';
+        button.style.left = `${event.clientX - offsetX}px`;
+        button.style.top = `${event.clientY - offsetY}px`;
+    }
+}
+
+// Asignar eventos de arrastre (opcional)
+document.querySelectorAll('#mobile-controls button').forEach(button => {
+    button.addEventListener('mousedown', startDrag);
+    button.addEventListener('touchstart', startDrag);
+    button.addEventListener('mouseup', endDrag);
+    button.addEventListener('touchend', endDrag);
+    button.addEventListener('mousemove', handleDrag);
+    button.addEventListener('touchmove', handleDrag);
+});

@@ -245,3 +245,54 @@ body {
 .rock {
     color: gray;
 }
+#mobile-controls {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: grid;
+    grid-template-areas:
+        ". up ."
+        "left down right";
+    gap: 10px;
+    z-index: 1000; /* Para que estén por encima de otros elementos */
+}
+
+#mobile-controls button {
+    width: 60px;
+    height: 60px;
+    font-size: 24px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#mobile-controls button:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+#up {
+    grid-area: up;
+}
+
+#left {
+    grid-area: left;
+}
+
+#down {
+    grid-area: down;
+}
+
+#right {
+    grid-area: right;
+}
+
+/* Ocultar controles en pantallas grandes */
+@media (min-width: 768px) {
+    #mobile-controls {
+        display: none;
+    }
+}
