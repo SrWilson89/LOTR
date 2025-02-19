@@ -13,7 +13,7 @@ const questList = document.getElementById('quest-list');
 let playerHealth = 1000;
 let playerLevel = 1;
 let enemiesDefeated = 0;
-let playerDamage = 25;
+let playerDamage = 40;
 let inBattle = false;
 let isGameOver = false;
 let bossSpawned = false;
@@ -293,3 +293,92 @@ function initializeGame() {
 }
 
 initializeGame();
+// Agregar una función para mostrar el mensaje de victoria
+function showVictoryMessage() {
+    const victoryMessage = document.createElement('div');
+    victoryMessage.id = 'victory-message';
+    victoryMessage.innerHTML = `
+        <p>¡Has ganado!</p>
+        <button id="restart-button">Reiniciar Juego</button>
+    `;
+    victoryMessage.style.position = 'absolute';
+    victoryMessage.style.top = '50%';
+    victoryMessage.style.left = '50%';
+    victoryMessage.style.transform = 'translate(-50%, -50%)';
+    victoryMessage.style.textAlign = 'center';
+    victoryMessage.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+    victoryMessage.style.padding = '20px';
+    victoryMessage.style.borderRadius = '10px';
+    victoryMessage.style.color = 'white';
+    victoryMessage.style.zIndex = '1000';
+    document.body.appendChild(victoryMessage);
+
+    // Agregar un botón para reiniciar el juego
+    const restartButton = document.getElementById('restart-button');
+    restartButton.addEventListener('click', () => {
+        location.reload(); // Recargar la página para reiniciar el juego
+    });
+}
+
+// Modificar la función checkQuests para verificar si el jugador ha ganado
+function checkQuests() {
+    let quest1Completed = false; // Misión 1: Derrotar a 5 enemigos
+    let quest2Completed = false; // Misión 2: Encontrar el Anillo Único
+
+    quests.forEach(quest => {
+        if (!quest.completed) {
+            if (quest.target && enemiesDefeated >= quest.target) {
+                quest.completed = true;
+                addToLog(`¡Misión completada: ${quest.description}!`);
+                quest1Completed = true; // Marcar la primera misión como completada
+            } else if (inventory.includes('💍')) {
+                quest.completed = true;
+                addToLog(`¡Misión completada: ${quest.description}!`);
+                quest2Completed = true; // Marcar la segunda misión como completada
+            }
+        } else {
+            // Si la misión ya estaba completada, verificamos cuál es
+            if (quest.description === 'Derrota a 5 enemigos') {
+                quest1Completed = true;
+            } else if (quest.description === 'Encuentra el Anillo Único') {
+                quest2Completed = true;
+            }
+        }
+    });
+
+    updateQuests();
+
+    // Verificar si ambas misiones están completadas
+    if (quest1Completed && quest2Completed) {
+        showVictoryMessage();
+    }
+}
+// Función para crear decoraciones (árboles y rocas)
+function createDecorations() {
+    const decorations = ['🌳', '🌲', '🪨']; // Emojis para árboles y rocas
+    for (let i = 0; i < 10; i++) { // Crear 10 decoraciones
+        const decoration = document.createElement('div');
+        decoration.className = 'decoration';
+        decoration.textContent = decorations[Math.floor(Math.random() * decorations.length)];
+        if (decoration.textContent === '🪨') {
+            decoration.classList.add('rock');
+        } else {
+            decoration.classList.add('tree');
+        }
+        decoration.style.left = Math.floor(Math.random() * 780) + 'px';
+        decoration.style.top = Math.floor(Math.random() * 780) + 'px';
+        document.getElementById('map').appendChild(decoration);
+    }
+}
+
+// Llamar a la función para crear decoraciones al inicializar el juego
+function initializeGame() {
+    createDecorations(); // Agregar decoraciones
+    for (let i = 0; i < 3; i++) {
+        createEnemy();
+    }
+    for (let i = 0; i < 2; i++) {
+        createItem();
+    }
+    updateQuests();
+}

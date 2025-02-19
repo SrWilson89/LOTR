@@ -25,19 +25,22 @@ body {
     width: 100%;
     height: 100%;
     background-color: #444;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23555" /><path d="M20 0l20 20-20 20L0 20z" fill="%23666" /></svg>');
+    background-size: 40px 40px; 
 }
 
 #player {
     position: absolute;
     font-size: 24px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 2; /* Para que el jugador esté por encima de las decoraciones */
 }
 
 .enemy {
     position: absolute;
     font-size: 24px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 2; /* Para que los enemigos estén por encima de las decoraciones */
 }
 
 .enemy.troll {
@@ -50,12 +53,15 @@ body {
 
 .enemy.boss {
     color: red;
-    font-size: 32px; /* Hacer al jefe más grande */
+    font-size: 32px;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
 }
 
 .item {
     position: absolute;
     font-size: 24px;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8); /* Brillo dorado */
+    z-index: 2; /* Para que los objetos estén por encima de las decoraciones */
 }
 
 #stats {
@@ -197,4 +203,45 @@ body {
         padding: 3px 6px;
         font-size: 12px;
     }
+}
+#victory-message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    z-index: 1000;
+}
+
+#restart-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#restart-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+.decoration {
+    position: absolute;
+    font-size: 24px;
+    z-index: 1; /* Para que estén detrás del jugador y los enemigos */
+}
+
+.tree {
+    color: green;
+}
+
+.rock {
+    color: gray;
 }
