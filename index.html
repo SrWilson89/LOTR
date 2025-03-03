@@ -1,46 +1,46 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RPG El Señor de los Anillos</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>RPG El Señor de los Anillos</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div id="game-container">
-        <div id="map"></div>
-        <div id="player">🧝</div>
-        <div id="enemies-container"></div>
-        <div id="items-container"></div>
-        <div id="stats">
-            <p>Vida: <span id="health">1000</span></p>
-            <p>Nivel: <span id="level">1</span></p>
-            <p>Enemigos Derrotados: <span id="defeated">0</span></p>
-        </div>
-        <div id="battle-log"></div>
-        <div id="game-over" class="hidden">
-            <p>¡Game Over!</p>
-            <button id="respawn-button">Reaparecer</button>
-        </div>
-        <div id="inventory">
-            <p>Inventario:</p>
-            <ul id="inventory-list"></ul>
-        </div>
-        <!-- <div id="abilities">
-            <button id="charge-attack">Ataque Cargado</button>
-            <button id="shield">Escudo</button>
-        </div> -->
-        <div id="quests">
-            <p>Misiones:</p>
-            <ul id="quest-list"></ul>
-        </div>
-        <div id="mobile-controls">
-            <button id="up">⬆️</button>
-            <button id="left">⬅️</button>
-            <button id="down">⬇️</button>
-            <button id="right">➡️</button>
-        </div>
+  <div class="game-container">
+    <h1>🧙♂️ La Búsqueda del Anillo 💍</h1>
+    
+    <div class="game-area">
+      <div class="status-bar">
+        <div>❤️ Salud: <span class="health" id="health">1000</span></div>
+        <div>⚔️ Enemigos: <span id="enemies-killed">0</span>/5</div>
+        <div>💍 Anillo: <span id="ring-found">No encontrado</span></div>
+      </div>
+      
+      <div class="main-screen" id="main-screen">
+        <h2>🌄 ¡Bienvenido a la Tierra Media!</h2>
+        <p>Tu misión es derrotar a 5 enemigos y encontrar el Anillo Único. 🌋 Explora diferentes localizaciones para completar tu misión.</p>
+        <p>🕵️♂️ Haz clic en "Explorar" para comenzar tu aventura.</p>
+      </div>
+      
+      <div class="action-buttons">
+        <button id="explore-btn">🌲 Explorar</button>
+        <button id="attack-btn" disabled>⚔️ Atacar</button>
+        <button id="search-btn" disabled>🔍 Buscar anillo</button>
+        <button id="rest-btn">🛌 Descansar</button>
+      </div>
+      
+      <div class="log" id="game-log">
+        <p>📜 La aventura está por comenzar...</p>
+      </div>
     </div>
-    <script src="script.js"></script>
+  </div>
+  
+  <div class="victory-screen" id="victory-screen">
+    <h2>🎉 ¡Victoria!</h2>
+    <p>🏆 Has completado todas las misiones. El Anillo Único está en tu poder y has derrotado a los enemigos que amenazaban la Tierra Media. 🕊️ ¡La paz ha sido restaurada!</p>
+    <button class="play-again" id="play-again-btn">🔄 Jugar de nuevo</button>
+  </div>
+
+  <script src="game.js"></script>
 </body>
 </html>

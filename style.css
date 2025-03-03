@@ -1,219 +1,171 @@
 body {
+    font-family: 'Trajan Pro', 'Palatino Linotype', serif;
+    background-color: #000;
+    color: #d4af37;
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    background-color: #333;
-    color: white;
-    font-family: Arial, sans-serif;
-}
-
-#game-container {
-    position: relative;
-    width: 90vw;
-    height: 90vh;
-    max-width: 800px;
-    max-height: 800px;
-    background-color: #222;
-    border: 2px solid #444;
+    background-image: url('/api/placeholder/800/600');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
     overflow: hidden;
-}
-
-#map {
-    width: 100%;
-    height: 100%;
-    background-color: #444;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40"><rect width="40" height="40" fill="%23555" /><path d="M20 0l20 20-20 20L0 20z" fill="%23666" /></svg>');
-    background-size: 40px 40px;
-}
-
-#player {
-    position: absolute;
-    font-size: 24px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 2;
-}
-
-.enemy {
-    position: absolute;
-    font-size: 24px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    z-index: 2;
-}
-
-.enemy.troll {
-    color: brown;
-}
-
-.enemy.nazgul {
-    color: black;
-}
-
-.enemy.boss {
-    color: red;
-    font-size: 32px;
-    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.7);
-}
-
-.item {
-    position: absolute;
-    font-size: 24px;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.8);
-    z-index: 2;
-}
-
-#stats {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background-color: rgba(27, 2, 216, 0.4);
+  }
+  
+  .game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  }
+  
+  h1 {
+    text-align: center;
+    color: #d4af37;
+    text-shadow: 0 0 10px #ff9900;
+    font-size: 2.5em;
+    margin-bottom: 10px;
+  }
+  
+  .game-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5);
     padding: 10px;
     border-radius: 5px;
-}
-
-#battle-log {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    width: calc(100% - 20px);
-    height: 60px;
+    border: 1px solid #d4af37;
+  }
+  
+  .health {
+    color: #ff5555;
+    font-weight: bold;
+  }
+  
+  .main-screen {
+    min-height: 300px;
     background-color: rgba(0, 0, 0, 0.5);
-    color: white;
-    padding: 5px;
-    overflow-y: auto;
-    font-size: 12px;
     border-radius: 5px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-#game-over {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.8);
+    border: 1px solid #d4af37;
     padding: 20px;
-    border-radius: 10px;
-}
-
-#game-over.hidden {
-    display: none;
-}
-
-#respawn-button {
-    padding: 10px 20px;
+    position: relative;
+  }
+  
+  .action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
+  button {
+    background-color: #614e1a;
+    color: #f0f0f0;
+    border: 2px solid #d4af37;
+    padding: 10px 15px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
     border-radius: 5px;
-    transition: background-color 0.3s, transform 0.3s;
-}
-
-#respawn-button:hover {
-    background-color: #45a049;
-    transform: scale(1.05);
-}
-
-#inventory {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: rgba(26, 120, 0, 0.4);
+    transition: all 0.3s;
+    font-family: inherit;
+  }
+  
+  button:hover {
+    background-color: #8a702e;
+    transform: translateY(-2px);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  }
+  
+  button:disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+    border-color: #555;
+  }
+  
+  .log {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    border: 1px solid #d4af37;
     padding: 10px;
-    border-radius: 5px;
-}
-
-#inventory-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#quests {
-    position: absolute;
-    top: 150px;
-    left: 10px;
-    background-color: rgba(8, 2, 121, 0.4);
-    padding: 10px;
-    border-radius: 5px;
-}
-
-#quest-list {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#mobile-controls {
+  }
+  
+  .log p {
+    margin: 5px 0;
+    font-style: italic;
+    color: #f0f0f0;
+  }
+  
+  .enemy {
+    color: #ff5555;
+    font-weight: bold;
+  }
+  
+  .item {
+    color: #55ff55;
+    font-weight: bold;
+  }
+  
+  .victory-screen {
     position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: grid;
-    grid-template-areas:
-        ". up ."
-        "left down right";
-    gap: 10px;
-    z-index: 1000;
-}
-
-#mobile-controls button {
-    width: 60px;
-    height: 60px;
-    font-size: 24px;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: 2px solid rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s;
-    touch-action: none;
-}
-
-#mobile-controls button:active {
-    background-color: rgba(255, 255, 255, 0.5);
-    transform: scale(1.2);
-}
-
-#up {
-    grid-area: up;
-}
-
-#left {
-    grid-area: left;
-}
-
-#down {
-    grid-area: down;
-}
-
-#right {
-    grid-area: right;
-}
-
-@media (max-width: 600px) {
-    #game-container {
-        width: 100vw;
-        height: 100vh;
-        max-width: none;
-        max-height: none;
-    }
-
-    #player, .enemy, .item {
-        font-size: 18px;
-    }
-
-    #stats, #inventory, #quests {
-        font-size: 12px;
-    }
-
-    #battle-log {
-        height: 40px;
-        font-size: 10px;
-    }
-}
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .victory-screen h2 {
+    font-size: 3em;
+    color: #ffd700;
+    text-shadow: 0 0 20px #ff9900;
+    margin-bottom: 20px;
+  }
+  
+  .victory-screen p {
+    font-size: 1.5em;
+    color: #f0f0f0;
+    max-width: 600px;
+    line-height: 1.5;
+  }
+  
+  .play-again {
+    margin-top: 30px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+  }
+  
+  .enemy-avatar, .location-image {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 10px;
+    margin: 0 auto 15px auto;
+    border: 2px solid #d4af37;
+  }
+  
+  .flash {
+    animation: flash-animation 0.5s;
+  }
+  
+  @keyframes flash-animation {
+    0% { background-color: rgba(255, 0, 0, 0.3); }
+    50% { background-color: rgba(255, 0, 0, 0.8); }
+    100% { background-color: rgba(0, 0, 0, 0.5); }
+  }
